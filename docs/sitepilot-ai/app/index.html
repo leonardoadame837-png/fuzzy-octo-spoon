@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#102a43" />
   <meta name="description" content="SitePilot AI mobile-first construction command center prototype." />
   <title>SitePilot AI</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -129,5 +130,10 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js"));
+    }
+  </script>
 </body>
 </html>

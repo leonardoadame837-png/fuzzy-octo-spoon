@@ -1,0 +1,11 @@
+{
+  "name": "SitePilot AI",
+  "short_name": "SitePilot",
+  "description": "Mobile-first construction command center for field teams, managers and owners.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fa",
+  "theme_color": "#102a43",
+  "orientation": "portrait-primary"
+}

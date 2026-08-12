@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#102a43" />
+  <meta name="description" content="SitePilot AI mobile-first construction command center prototype." />
+  <title>SitePilot AI</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#app-content">Skip to content</a>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-row">
+        <button id="projectButton" class="project-button" type="button" aria-label="Change project">
+          <span class="brand-mark" aria-hidden="true">SP</span>
+          <span>
+            <strong>SitePilot AI</strong>
+            <small id="projectName">Riverfront Medical Center</small>
+          </span>
+          <span aria-hidden="true">⌄</span>
+        </button>
+
+        <button id="profileButton" class="avatar-button" type="button" aria-label="Open profile and role settings">
+          <span id="profileInitials">LA</span>
+        </button>
+      </div>
+
+      <div class="status-strip" aria-label="Project status">
+        <span class="status-dot"></span>
+        <span>Last sync: <strong id="syncTime">just now</strong></span>
+        <button id="syncButton" class="text-button" type="button">Sync</button>
+      </div>
+    </header>
+
+    <main id="app-content" class="app-content" tabindex="-1" aria-live="polite"></main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item is-active" type="button" data-route="today" aria-current="page">
+        <span class="nav-icon" aria-hidden="true">⌂</span>
+        <span>Today</span>
+      </button>
+      <button class="nav-item" type="button" data-route="work">
+        <span class="nav-icon" aria-hidden="true">✓</span>
+        <span>My Work</span>
+      </button>
+      <button class="nav-item capture-nav" type="button" data-route="capture">
+        <span class="capture-circle" aria-hidden="true">＋</span>
+        <span>Capture</span>
+      </button>
+      <button class="nav-item" type="button" data-route="alerts">
+        <span class="nav-icon" aria-hidden="true">!</span>
+        <span>Alerts</span>
+        <span id="alertBadge" class="nav-badge">3</span>
+      </button>
+      <button class="nav-item" type="button" data-route="more">
+        <span class="nav-icon" aria-hidden="true">☷</span>
+        <span>More</span>
+      </button>
+    </nav>
+  </div>
+
+  <dialog id="roleDialog" class="sheet-dialog">
+    <form method="dialog" class="sheet-card">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Demo permissions</p>
+          <h2>Choose your role</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close">×</button>
+      </div>
+      <p class="muted">Navigation and priority information change based on each worker’s responsibilities.</p>
+      <div id="roleOptions" class="role-options"></div>
+    </form>
+  </dialog>
+
+  <dialog id="projectDialog" class="sheet-dialog">
+    <form method="dialog" class="sheet-card">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Active project</p>
+          <h2>Select project</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close">×</button>
+      </div>
+      <div id="projectOptions" class="role-options"></div>
+    </form>
+  </dialog>
+
+  <dialog id="actionDialog" class="sheet-dialog">
+    <form id="actionForm" method="dialog" class="sheet-card">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">New field record</p>
+          <h2 id="actionTitle">Create record</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close">×</button>
+      </div>
+      <input id="actionType" type="hidden" />
+      <label>
+        Area or location
+        <select id="actionArea" required>
+          <option value="">Select an area</option>
+          <option>Level 1 — Lobby</option>
+          <option>Level 2 — East Wing</option>
+          <option>Level 3 — Zone B</option>
+          <option>Roof</option>
+          <option>Exterior</option>
+        </select>
+      </label>
+      <label>
+        Notes
+        <textarea id="actionNotes" rows="4" placeholder="Describe what you saw or completed"></textarea>
+      </label>
+      <label class="file-label">
+        <span>Add photo</span>
+        <input id="cameraInput" type="file" accept="image/*" capture="environment" />
+      </label>
+      <p id="cameraStatus" class="muted">No photo selected.</p>
+      <button class="primary-button" value="default" type="submit">Save field record</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js"));
+    }
+  </script>
+</body>
+</html>

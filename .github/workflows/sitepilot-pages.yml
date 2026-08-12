@@ -1,0 +1,73 @@
+name: SitePilot AI Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/sitepilot-ai/**'
+      - '.github/workflows/sitepilot-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate SitePilot files
+        run: |
+          test -f docs/sitepilot-ai/app/index.html
+          test -f docs/sitepilot-ai/app/app.js
+          test -f docs/sitepilot-ai/app/styles.css
+          test -f docs/sitepilot-ai/app/manifest.webmanifest
+          test -f docs/sitepilot-ai/app/service-worker.js
+          test -f docs/sitepilot-ai/app/icon.svg
+          node --check docs/sitepilot-ai/app/app.js
+          node --check docs/sitepilot-ai/app/service-worker.js
+          python - <<'PY'
+          import json
+          with open('docs/sitepilot-ai/app/manifest.webmanifest', encoding='utf-8') as f:
+              manifest = json.load(f)
+          required = ['name', 'short_name', 'start_url', 'scope', 'display']
+          missing = [key for key in required if key not in manifest]
+          if missing:
+              raise SystemExit(f'Missing manifest keys: {missing}')
+          print('SitePilot manifest OK')
+          PY
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare SitePilot site
+        run: |
+          mkdir -p _site
+          cp -R docs/sitepilot-ai/app/. _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
